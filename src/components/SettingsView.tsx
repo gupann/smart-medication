@@ -1,4 +1,4 @@
-import { Bell, Lock, Moon, Smartphone, Users, Shield, Volume2 } from 'lucide-react';
+import { Bell, Lock, Moon, Smartphone, Users, Shield, Volume2, LogOut } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Switch } from './ui/switch';
 import { Label } from './ui/label';
@@ -7,47 +7,50 @@ import { Separator } from './ui/separator';
 import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { useState } from 'react';
+import { useTheme } from './ThemeProvider';
+import { useAuth } from './AuthContext';
 
 interface SettingsViewProps {
   userMode: 'user' | 'caregiver';
-  onModeChange?: (mode: 'user' | 'caregiver') => void;
 }
 
-export function SettingsView({ userMode, onModeChange }: SettingsViewProps) {
+export function SettingsView({ userMode }: SettingsViewProps) {
+  const { theme, setTheme } = useTheme();
+  const { user, logout } = useAuth();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
   const [autoLockEnabled, setAutoLockEnabled] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const [volume, setVolume] = useState([75]);
 
   return (
     <div className="space-y-4">
       {/* Account Type */}
-      {onModeChange && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Users className="size-5" />
-              <CardTitle>Account Type</CardTitle>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Users className="size-5" />
+            <CardTitle>Account Type</CardTitle>
+          </div>
+          <CardDescription>
+            Your current account type
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+            <span className="text-sm">Account Type</span>
+            <span className="text-sm font-medium">
+              {userMode === 'user' ? 'Patient' : 'Caregiver'}
+            </span>
+          </div>
+          {user?.email && (
+            <div className="flex items-center justify-between p-3 bg-muted rounded-lg mt-3">
+              <span className="text-sm">Email</span>
+              <span className="text-sm font-medium">{user.email}</span>
             </div>
-            <CardDescription>
-              Switch between patient and caregiver mode
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Select value={userMode} onValueChange={(v) => onModeChange(v as 'user' | 'caregiver')}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="user">Patient Mode</SelectItem>
-                <SelectItem value="caregiver">Caregiver Mode</SelectItem>
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
-      )}
+          )}
+        </CardContent>
+      </Card>
 
       {/* Notification Settings */}
       <Card>
@@ -349,7 +352,10 @@ export function SettingsView({ userMode, onModeChange }: SettingsViewProps) {
                 Use dark theme for the app
               </p>
             </div>
-            <Switch checked={darkMode} onCheckedChange={setDarkMode} />
+            <Switch 
+              checked={theme === 'dark'} 
+              onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')} 
+            />
           </div>
 
           <Separator />
@@ -376,6 +382,16 @@ export function SettingsView({ userMode, onModeChange }: SettingsViewProps) {
         <Button variant="outline" className="w-full">Export Data</Button>
         <Button variant="outline" className="w-full">Contact Support</Button>
       </div>
+
+      {/* Logout Button */}
+      <Button 
+        variant="destructive" 
+        className="w-full" 
+        onClick={logout}
+      >
+        <LogOut className="size-4 mr-2" />
+        Log Out
+      </Button>
 
       {/* App Version */}
       <div className="text-center py-4">

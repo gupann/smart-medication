@@ -1,16 +1,34 @@
-import { useState } from 'react';
-import { Home, BarChart3, Users, Settings, Bell, Plus } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Home, BarChart3, Settings, Bell, Plus } from 'lucide-react';
 import { UserDashboard } from './components/UserDashboard';
 import { CaregiverDashboard } from './components/CaregiverDashboard';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { SettingsView } from './components/SettingsView';
 import { AddBottleSheet } from './components/AddBottleSheet';
 import { Button } from './components/ui/button';
+import { ThemeProvider } from './components/ThemeProvider';
+import { AuthProvider, useAuth } from './components/AuthContext';
+import { LoginSignUp } from './components/LoginSignUp';
 
-export default function App() {
+function AppContent() {
   const [activeTab, setActiveTab] = useState('home');
   const [isAddBottleOpen, setIsAddBottleOpen] = useState(false);
-  const [userMode, setUserMode] = useState<'user' | 'caregiver'>('user');
+  const { isLoggedIn, user } = useAuth();
+  
+  // User mode is now based on the logged-in user's account type
+  const userMode = user?.accountType || 'user';
+
+  // Reset to home page when user logs in
+  useEffect(() => {
+    if (isLoggedIn) {
+      setActiveTab('home');
+    }
+  }, [isLoggedIn]);
+
+  // Show login page if not logged in
+  if (!isLoggedIn) {
+    return <LoginSignUp />;
+  }
 
   return (
     <div className="size-full bg-background flex flex-col max-w-md mx-auto">
@@ -18,10 +36,16 @@ export default function App() {
       <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <div className="size-9 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md">
+            <div className="size-9 rounded-lg bg-gradient-to-br from-pink-400 to-pink-500 flex items-center justify-center shadow-md">
               <svg viewBox="0 0 24 24" fill="none" className="size-5 text-white">
-                <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                {/* Pill bottle cap */}
+                <rect x="7" y="3" width="10" height="3" rx="1" fill="currentColor" />
+                {/* Bottle body */}
+                <path d="M8 6H16C17.1046 6 18 6.89543 18 8V19C18 20.1046 17.1046 21 16 21H8C6.89543 21 6 20.1046 6 19V8C6 6.89543 6.89543 6 8 6Z" fill="currentColor" />
+                {/* Pills inside */}
+                <circle cx="10" cy="11" r="1.5" fill="white" opacity="0.7" />
+                <circle cx="14" cy="13" r="1.5" fill="white" opacity="0.7" />
+                <circle cx="11" cy="16" r="1.5" fill="white" opacity="0.7" />
               </svg>
             </div>
             <div>
@@ -43,8 +67,7 @@ export default function App() {
           {activeTab === 'home' && userMode === 'user' && <UserDashboard />}
           {activeTab === 'home' && userMode === 'caregiver' && <CaregiverDashboard />}
           {activeTab === 'analytics' && <AnalyticsDashboard userMode={userMode} />}
-          {activeTab === 'patients' && userMode === 'caregiver' && <CaregiverDashboard showPatientList />}
-          {activeTab === 'settings' && <SettingsView userMode={userMode} onModeChange={setUserMode} />}
+          {activeTab === 'settings' && <SettingsView userMode={userMode} />}
         </div>
       </div>
 
@@ -75,20 +98,6 @@ export default function App() {
             <span className="text-xs">Analytics</span>
           </button>
 
-          {userMode === 'caregiver' && (
-            <button
-              onClick={() => setActiveTab('patients')}
-              className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
-                activeTab === 'patients' 
-                  ? 'text-primary bg-primary/10' 
-                  : 'text-muted-foreground'
-              }`}
-            >
-              <Users className="size-5" />
-              <span className="text-xs">Patients</span>
-            </button>
-          )}
-
           <button
             onClick={() => setActiveTab('settings')}
             className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
@@ -116,5 +125,15 @@ export default function App() {
       {/* Add Bottle Sheet */}
       <AddBottleSheet open={isAddBottleOpen} onOpenChange={setIsAddBottleOpen} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
+    </AuthProvider>
   );
 }

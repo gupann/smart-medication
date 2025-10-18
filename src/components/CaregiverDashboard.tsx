@@ -1,4 +1,4 @@
-import { Users, TrendingUp, AlertTriangle, CheckCircle, Clock, User } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
@@ -21,7 +21,7 @@ export function CaregiverDashboard({ showPatientList = false }: CaregiverDashboa
       dosesDueToday: 4,
       dosesTakenToday: 3,
       alerts: [],
-      status: 'good' as const,
+      status: 'on-track' as const,
       lastActivity: '2 hours ago',
     },
     {
@@ -34,7 +34,7 @@ export function CaregiverDashboard({ showPatientList = false }: CaregiverDashboa
       dosesDueToday: 3,
       dosesTakenToday: 2,
       alerts: ['Missed dose at 2:00 PM'],
-      status: 'warning' as const,
+      status: 'alert' as const,
       lastActivity: '5 hours ago',
     },
     {
@@ -47,7 +47,7 @@ export function CaregiverDashboard({ showPatientList = false }: CaregiverDashboa
       dosesDueToday: 4,
       dosesTakenToday: 4,
       alerts: ['Low pills - Metformin (5 remaining)'],
-      status: 'attention' as const,
+      status: 'alert' as const,
       lastActivity: '30 minutes ago',
     },
   ];
@@ -67,55 +67,56 @@ export function CaregiverDashboard({ showPatientList = false }: CaregiverDashboa
         <Card>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardDescription className="text-xs">Patients</CardDescription>
-              <Users className="size-3.5 text-chart-1" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl">{overallStats.totalPatients}</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Active</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardDescription className="text-xs">Avg. Rate</CardDescription>
-              <TrendingUp className="size-3.5 text-chart-2" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl">{overallStats.avgAdherence}%</div>
-            <Progress value={overallStats.avgAdherence} className="h-1.5 mt-1.5" />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardDescription className="text-xs">Today</CardDescription>
+              <CardDescription className="text-xs">Doses Today</CardDescription>
               <CheckCircle className="size-3.5 text-chart-4" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl">{overallStats.takenDoses}/{overallStats.activeDoses}</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Doses</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{overallStats.activeDoses - overallStats.takenDoses} remaining</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardDescription className="text-xs">Alerts</CardDescription>
-              <AlertTriangle className="size-3.5 text-orange-500" />
+              <CardDescription className="text-xs">Next Dose</CardDescription>
+              <Clock className="size-3.5 text-chart-1" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl">{overallStats.alertCount}</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Active</p>
+            <div className="text-2xl">2:00 PM</div>
+            <p className="text-xs text-muted-foreground mt-0.5">Robert Chen</p>
           </CardContent>
         </Card>
       </div>
+
+      {/* Active Alerts */}
+      {overallStats.alertCount > 0 && (
+        <Card className="border-orange-200 bg-orange-50/50 dark:border-orange-900 dark:bg-orange-950/20">
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="size-4 text-orange-600 dark:text-orange-500" />
+              <CardTitle className="text-sm">
+                {overallStats.alertCount} Active Alert{overallStats.alertCount !== 1 ? 's' : ''}
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-1.5">
+              {patients.filter(p => p.alerts.length > 0).map((patient) => (
+                <div key={patient.id}>
+                  {patient.alerts.map((alert, idx) => (
+                    <p key={idx} className="text-xs">
+                      <span className="font-medium">{patient.name}:</span> {alert}
+                    </p>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Patient List */}
       <div>
@@ -136,19 +137,13 @@ export function CaregiverDashboard({ showPatientList = false }: CaregiverDashboa
                   </div>
                   
                   <div className="shrink-0">
-                    {patient.status === 'good' && (
+                    {patient.status === 'on-track' ? (
                       <Badge className="bg-green-500 hover:bg-green-600 text-xs px-2 py-0">
                         On Track
                       </Badge>
-                    )}
-                    {patient.status === 'warning' && (
+                    ) : (
                       <Badge variant="destructive" className="text-xs px-2 py-0">
                         Alert
-                      </Badge>
-                    )}
-                    {patient.status === 'attention' && (
-                      <Badge className="bg-orange-500 hover:bg-orange-600 text-xs px-2 py-0">
-                        Review
                       </Badge>
                     )}
                   </div>
