@@ -43,16 +43,16 @@ export function LoginSignUp() {
       <div className="w-full max-w-md space-y-6">
         {/* Logo and Title */}
         <div className="flex flex-col items-center gap-4 mb-8">
-          <div className="size-16 rounded-2xl bg-gradient-to-br from-pink-400 to-pink-500 flex items-center justify-center shadow-lg">
-            <svg viewBox="0 0 24 24" fill="none" className="size-9 text-white">
-              {/* Pill bottle cap */}
-              <rect x="7" y="3" width="10" height="3" rx="1" fill="currentColor" />
-              {/* Bottle body */}
-              <path d="M8 6H16C17.1046 6 18 6.89543 18 8V19C18 20.1046 17.1046 21 16 21H8C6.89543 21 6 20.1046 6 19V8C6 6.89543 6.89543 6 8 6Z" fill="currentColor" />
-              {/* Pills inside */}
-              <circle cx="10" cy="11" r="1.5" fill="white" opacity="0.7" />
-              <circle cx="14" cy="13" r="1.5" fill="white" opacity="0.7" />
-              <circle cx="11" cy="16" r="1.5" fill="white" opacity="0.7" />
+          <div className="size-16 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center shadow-lg">
+            <svg viewBox="0 0 24 24" fill="none" className="size-10 text-white">
+              {/* Pill bottle cap/lid */}
+              <rect x="6" y="2" width="12" height="4" rx="1.5" fill="currentColor" opacity="0.9" />
+              {/* Bottle neck */}
+              <rect x="8" y="5" width="8" height="2" fill="currentColor" />
+              {/* Main bottle body */}
+              <path d="M7 7H17C17.5523 7 18 7.44772 18 8V20C18 20.5523 17.5523 21 17 21H7C6.44772 21 6 20.5523 6 20V8C6 7.44772 6.44772 7 7 7Z" fill="currentColor" />
+              {/* Bottle label area */}
+              <rect x="8" y="11" width="8" height="6" rx="0.5" fill="white" opacity="0.2" />
             </svg>
           </div>
           <div className="text-center">
