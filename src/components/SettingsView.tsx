@@ -395,7 +395,7 @@ export function SettingsView({ userMode }: SettingsViewProps) {
 
       {/* App Version */}
       <div className="text-center py-4">
-        <p className="text-xs text-muted-foreground">MediTrack v2.1.4</p>
+        <p className="text-xs text-muted-foreground">Pillarity v2.1.4</p>
       </div>
     </div>
   );

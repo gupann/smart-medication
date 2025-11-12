@@ -49,7 +49,7 @@ function AppContent() {
               </svg>
             </div>
             <div>
-              <h1 className="leading-none mb-0.5">MediTrack</h1>
+              <h1 className="leading-none mb-0.5">Pillarity</h1>
               <p className="text-xs text-muted-foreground leading-none">Smart Pill Adherence</p>
             </div>
           </div>

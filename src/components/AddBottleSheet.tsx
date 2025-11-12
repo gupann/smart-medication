@@ -82,7 +82,7 @@ export function AddBottleSheet({ open, onOpenChange }: AddBottleSheetProps) {
               <div className="text-center space-y-2">
                 <p className="text-sm">Searching for nearby bottles...</p>
                 <Badge className="bg-green-500 hover:bg-green-600">
-                  MediTrack Bottle #A7F2 Found
+                  Pillarity Bottle #A7F2 Found
                 </Badge>
               </div>
 

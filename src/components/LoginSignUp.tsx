@@ -56,7 +56,7 @@ export function LoginSignUp() {
             </svg>
           </div>
           <div className="text-center">
-            <h1 className="mb-1">MediTrack</h1>
+            <h1 className="mb-1">Pillarity</h1>
             <p className="text-sm text-muted-foreground">Smart Pill Adherence</p>
           </div>
         </div>

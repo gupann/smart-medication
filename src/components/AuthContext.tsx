@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Load user from localStorage on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem('meditrack_user');
+    const storedUser = localStorage.getItem('pillarity_user');
     if (storedUser) {
       const userData = JSON.parse(storedUser);
       setUser(userData);
@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signup = (email: string, password: string, accountType: 'user' | 'caregiver') => {
     // Check if user already exists
-    const existingUsers = JSON.parse(localStorage.getItem('meditrack_users') || '[]');
+    const existingUsers = JSON.parse(localStorage.getItem('pillarity_users') || '[]');
     const userExists = existingUsers.some((u: any) => u.email === email);
     
     if (userExists) {
@@ -41,19 +41,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Save user credentials
     const newUser = { email, password, accountType };
     existingUsers.push(newUser);
-    localStorage.setItem('meditrack_users', JSON.stringify(existingUsers));
+    localStorage.setItem('pillarity_users', JSON.stringify(existingUsers));
 
     // Log them in
     const userData = { email, accountType };
     setUser(userData);
     setIsLoggedIn(true);
-    localStorage.setItem('meditrack_user', JSON.stringify(userData));
+    localStorage.setItem('pillarity_user', JSON.stringify(userData));
     
     return true;
   };
 
   const login = (email: string, password: string) => {
-    const existingUsers = JSON.parse(localStorage.getItem('meditrack_users') || '[]');
+    const existingUsers = JSON.parse(localStorage.getItem('pillarity_users') || '[]');
     const foundUser = existingUsers.find((u: any) => u.email === email && u.password === password);
     
     if (!foundUser) {
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const userData = { email: foundUser.email, accountType: foundUser.accountType };
     setUser(userData);
     setIsLoggedIn(true);
-    localStorage.setItem('meditrack_user', JSON.stringify(userData));
+    localStorage.setItem('pillarity_user', JSON.stringify(userData));
     
     return true;
   };
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null);
     setIsLoggedIn(false);
-    localStorage.removeItem('meditrack_user');
+    localStorage.removeItem('pillarity_user');
   };
 
   return (
